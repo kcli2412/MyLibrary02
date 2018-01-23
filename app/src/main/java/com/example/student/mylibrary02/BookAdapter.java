@@ -1,9 +1,12 @@
 package com.example.student.mylibrary02;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.student.mylibrary02.data.Book;
 
@@ -40,6 +43,33 @@ public class BookAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        return null;
+        ViewHolder viewHolder;
+
+        if (view == null)
+        {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            view = inflater.inflate(R.layout.bookitem, null);
+            viewHolder = new ViewHolder();
+            viewHolder.iv = (ImageView) view.findViewById(R.id.item_image);
+            viewHolder.tv1 = (TextView) view.findViewById(R.id.item_name);
+            viewHolder.tv2 = (TextView) view.findViewById(R.id.item_author);
+            view.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) view.getTag();
+        }
+
+        viewHolder.tv1.setText(mylist.get(i).name);
+        viewHolder.tv2.setText(mylist.get(i).author);
+
+        return view;
+    }
+
+    static class ViewHolder
+    {
+        ImageView iv;
+        TextView tv1;
+        TextView tv2;
     }
 }

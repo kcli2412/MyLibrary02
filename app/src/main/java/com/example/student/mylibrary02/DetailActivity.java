@@ -1,6 +1,8 @@
 package com.example.student.mylibrary02;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,8 +10,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.student.mylibrary02.data.Book;
-
-import static com.example.student.mylibrary02.MainActivity.dao;
 
 public class DetailActivity extends AppCompatActivity {
     Book book;
@@ -40,7 +40,7 @@ public class DetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        book = dao.getBook(id);
+        book = MainActivity.dao.getBook(id);
 
         tv1.setText(book.name);
         tv2.setText(book.isbn);
@@ -60,12 +60,29 @@ public class DetailActivity extends AppCompatActivity {
 
     public void clickDelete(View v)
     {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+        builder.setTitle("刪除確認");
+        builder.setMessage("確認要刪除本筆資料嗎");
+        builder.setPositiveButton("確認", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                MainActivity.dao.delete(book.id);
+                finish();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
+            }
+        });
+        builder.show();
     }
 
     public void clickEdit(View v)
     {
         Intent intent = new Intent(DetailActivity.this, EditActivity.class);
+        intent.putExtra("id", book.id);
         startActivity(intent);
     }
 }

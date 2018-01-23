@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     ListView lv;
     ArrayList<String> booksName;
     ArrayAdapter<String> adapter;
+    BookAdapter bookAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         booksName = new ArrayList<>();
         adapter = new ArrayAdapter<String>(
                 MainActivity.this, android.R.layout.simple_list_item_1, booksName);
-        /*lv.setAdapter(adapter);
+        lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -44,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("id", dao.getList().get(position).id);
                 startActivity(intent);
             }
-        });*/
+        });
 
-        BookAdapter adapter = new BookAdapter(MainActivity.this, dao.getList());
-        lv.setAdapter(adapter);
+//        bookAdapter = new BookAdapter(MainActivity.this, dao.getList());
+//        lv.setAdapter(adapter);
     }
 
     @Override
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             booksName.add(book.name);
         }
         adapter.notifyDataSetChanged();
+//        bookAdapter.notifyDataSetChanged();
     }
 
     @Override
