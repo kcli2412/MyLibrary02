@@ -1,23 +1,26 @@
 package com.example.student.mylibrary02.data;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /**
- * Created by Student on 2018/1/23.
+ * Created by Student on 2018/1/24.
  */
 
-public class BookCaseDAO implements BookDAO {
+public class BookFileDAO implements BookDAO {
+    Context context;
     ArrayList<Book> mylist;
 
-    public BookCaseDAO()
+    public BookFileDAO(Context context)
     {
+        this.context = context;
         mylist = new ArrayList<>();
     }
 
     @Override
     public boolean add(Book book) {
         mylist.add(book);
-
         return true;
     }
 
@@ -31,7 +34,9 @@ public class BookCaseDAO implements BookDAO {
         for (Book book:mylist)
         {
             if (book.id == id)
+            {
                 return book;
+            }
         }
 
         return null;
@@ -44,15 +49,6 @@ public class BookCaseDAO implements BookDAO {
             if (b.id == book.id)
             {
                 b.name = book.name;
-                b.isbn = book.isbn;
-                b.author = book.author;
-                b.publication_date = book.publication_date;
-                b.press = book.press;
-                b.category = book.category;
-                b.introduction = book.introduction;
-                b.pricing = book.pricing;
-                b.score = book.score;
-                b.bookcase = book.bookcase;
 
                 return true;
             }

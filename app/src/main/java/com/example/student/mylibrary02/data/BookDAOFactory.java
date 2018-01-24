@@ -1,18 +1,24 @@
 package com.example.student.mylibrary02.data;
 
-import static com.example.student.mylibrary02.data.DBType.BookCase;
+import android.content.Context;
 
 /**
  * Created by Student on 2018/1/23.
  */
 
 public class BookDAOFactory {
-    public static BookDAO getDAOInstance(DBType dbType)
+    public static BookDAO getDAOInstance(Context context, DBType dbType)
     {
         switch(dbType)
         {
-            case BookCase:
+            case MEMORY:
                 return new BookCaseDAO();
+            case FILE:
+                return new BookFileDAO(context);
+            case DB:
+                return new BookDAODBImpl();
+            case CLOUD:
+                return new BookCloudDAOImpl();
         }
         return null;
     }

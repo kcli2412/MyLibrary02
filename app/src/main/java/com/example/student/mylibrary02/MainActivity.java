@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbType = DBType.BookCase;
-        dao = BookDAOFactory.getDAOInstance(dbType);
+        dbType = DBType.MEMORY;
+        dao = BookDAOFactory.getDAOInstance(MainActivity.this, dbType);
         lv = findViewById(R.id.listView);
 
         booksName = new ArrayList<>();

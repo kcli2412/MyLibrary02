@@ -5,5 +5,5 @@ package com.example.student.mylibrary02.data;
  */
 
 public enum DBType {
-    BookCase
+    MEMORY, FILE, DB, CLOUD
 }
