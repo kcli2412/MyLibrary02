@@ -8,8 +8,6 @@ import android.widget.RatingBar;
 
 import com.example.student.mylibrary02.data.Book;
 
-import static com.example.student.mylibrary02.MainActivity.dao;
-
 public class AddActivity extends AppCompatActivity {
 
     @Override
@@ -41,9 +39,9 @@ public class AddActivity extends AppCompatActivity {
         int score = Integer.valueOf(rb.getNumStars());
         int bookcase = 1;
 
-        Book book = new Book(dao.getNewBookId(), name, isbn, author, publication_date,
+        Book book = new Book(MainActivity.dao.getNewBookId(), name, isbn, author, publication_date,
                 press, category, introduction, pricing, score, bookcase);
-        dao.add(book);
+        MainActivity.dao.add(book);
         finish();
     }
 }

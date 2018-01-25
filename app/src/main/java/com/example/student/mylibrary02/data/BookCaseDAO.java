@@ -17,7 +17,6 @@ public class BookCaseDAO implements BookDAO {
     @Override
     public boolean add(Book book) {
         mylist.add(book);
-
         return true;
     }
 
@@ -28,18 +27,23 @@ public class BookCaseDAO implements BookDAO {
 
     @Override
     public Book getBook(int id) {
-        for (Book book:mylist)
+        return getBookById(id);
+    }
+
+    @Override
+    public Book getBookById(int id)
+    {
+        for (Book book : mylist)
         {
             if (book.id == id)
                 return book;
         }
-
         return null;
     }
 
     @Override
     public boolean update(Book book) {
-        for (Book b:mylist)
+        for (Book b : mylist)
         {
             if (b.id == book.id)
             {
@@ -53,26 +57,22 @@ public class BookCaseDAO implements BookDAO {
                 b.pricing = book.pricing;
                 b.score = book.score;
                 b.bookcase = book.bookcase;
-
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
     public boolean delete(int id) {
-        for (Book book:mylist)
+        for (Book book : mylist)
         {
             if (book.id == id)
             {
                 mylist.remove(book);
-
                 return true;
             }
         }
-
         return false;
     }
 
@@ -80,12 +80,11 @@ public class BookCaseDAO implements BookDAO {
     public int getNewBookId() {
         for (int i = 0; i < mylist.size(); i++)
         {
-            if (getBook(i + 1) == null)
+            if (getBookById(i + 1) == null)
             {
                 return i + 1;
             }
         }
-
         return mylist.size() + 1;
     }
 }

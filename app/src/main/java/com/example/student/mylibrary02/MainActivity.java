@@ -22,21 +22,19 @@ public class MainActivity extends AppCompatActivity {
     public static BookDAO dao;
     DBType dbType;
     ListView lv;
-    ArrayList<String> booksName;
+    ArrayList<String> bookNames;
     ArrayAdapter<String> adapter;
-    BookAdapter bookAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbType = DBType.MEMORY;
+        dbType = DBType.CLOUD;
         dao = BookDAOFactory.getDAOInstance(MainActivity.this, dbType);
-        lv = findViewById(R.id.listView);
-
-        booksName = new ArrayList<>();
+        bookNames = new ArrayList<>();
         adapter = new ArrayAdapter<String>(
-                MainActivity.this, android.R.layout.simple_list_item_1, booksName);
+                MainActivity.this, android.R.layout.simple_list_item_1, bookNames);
+        lv = findViewById(R.id.listView);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -46,24 +44,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-//        bookAdapter = new BookAdapter(MainActivity.this, dao.getList());
+//        BookAdapter bookAdapter = new BookAdapter(MainActivity.this, dao.getList());
 //        lv.setAdapter(adapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("MainActivity", "onResume: " + dao.getList());
-        if (dao.getList() == null)
+        refreshData();
+    }
+
+    public void refreshData()
+    {
+        bookNames.clear();
+        for (Book book : dao.getList())
         {
-            Log.d("MainActivity", "NULL");
-        }
-        booksName.clear();
-        for (Book book:dao.getList())
-        {
-            Log.d("MainActivity name", book.name);
-            booksName.add(book.name);
+            bookNames.add(book.id + "_id, " + book.name);
         }
         adapter.notifyDataSetChanged();
 //        bookAdapter.notifyDataSetChanged();

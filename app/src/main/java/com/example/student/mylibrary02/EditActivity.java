@@ -19,6 +19,9 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
+        id = getIntent().getIntExtra("id", 0);
+        book = MainActivity.dao.getBook(id);
+
         ed1 = findViewById(R.id.edit_name);
         ed2 = findViewById(R.id.edit_isbn);
         ed3 = findViewById(R.id.edit_author);
@@ -28,9 +31,6 @@ public class EditActivity extends AppCompatActivity {
         ed7 = findViewById(R.id.edit_introduction);
         ed8 = findViewById(R.id.edit_pricing);
         rb = findViewById(R.id.edit_score);
-
-        id = getIntent().getIntExtra("id", 0);
-        book = MainActivity.dao.getBook(id);
 
         ed1.setText(book.name);
         ed2.setText(book.isbn);

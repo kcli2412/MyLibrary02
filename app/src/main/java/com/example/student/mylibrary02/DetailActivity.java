@@ -13,14 +13,18 @@ import com.example.student.mylibrary02.data.Book;
 
 public class DetailActivity extends AppCompatActivity {
     Book book;
+    int id;
     TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8;
     RatingBar rb;
-    int id;
+
+    boolean fastBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        id = getIntent().getIntExtra("id", 0);
 
         tv1 = findViewById(R.id.detail_name);
         tv2 = findViewById(R.id.detail_isbn);
@@ -30,19 +34,20 @@ public class DetailActivity extends AppCompatActivity {
         tv6 = findViewById(R.id.detail_category);
         tv7 = findViewById(R.id.detail_introduction);
         tv8 = findViewById(R.id.detail_pricing);
-
         rb = findViewById(R.id.detail_score);
-
-        id = getIntent().getIntExtra("id", 0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        book = MainActivity.dao.getBook(id);
+        if (fastBack)
+        {
+            finish();
+        }
 
-        tv1.setText(book.name);
+        book = MainActivity.dao.getBook(id);
+        tv1.setText(book.id + "_id, " + book.name);
         tv2.setText(book.isbn);
         tv3.setText(book.author);
         tv4.setText(book.publication_date);
@@ -83,6 +88,7 @@ public class DetailActivity extends AppCompatActivity {
     {
         Intent intent = new Intent(DetailActivity.this, EditActivity.class);
         intent.putExtra("id", book.id);
+        fastBack = true;
         startActivity(intent);
     }
 }

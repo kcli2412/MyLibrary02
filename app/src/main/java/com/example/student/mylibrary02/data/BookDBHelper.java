@@ -9,14 +9,19 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class BookDBHelper extends SQLiteOpenHelper {
+    final static String DB_NAME = "book.sqlite";
+    final static int VERSION = 1;
 
-    public BookDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public BookDBHelper(Context context) {
+        super(context, DB_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        sqLiteDatabase.execSQL("CREATE TABLE `books` ( `_id` INTEGER, `name` TEXT, `isbn` TEXT," +
+                " `author` TEXT, `publication_date` TEXT, `press` TEXT," +
+                " `category` TEXT, `introduction` TEXT, `pricing` INTEGER," +
+                " `score` INTEGER, `bookcase` INTEGER, PRIMARY KEY(`_id`) )");
     }
 
     @Override

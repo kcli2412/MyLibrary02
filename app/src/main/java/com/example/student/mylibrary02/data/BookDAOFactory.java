@@ -16,9 +16,9 @@ public class BookDAOFactory {
             case FILE:
                 return new BookFileDAO(context);
             case DB:
-                return new BookDAODBImpl();
+                return new BookDAODBImpl(context);
             case CLOUD:
-                return new BookCloudDAOImpl();
+                return new BookCloudDAOImpl(context);
         }
         return null;
     }

@@ -10,6 +10,7 @@ public interface BookDAO {
     public boolean add(Book book);
     public ArrayList<Book> getList();
     public Book getBook(int id);
+    public Book getBookById(int id);
     public boolean update(Book book);
     public boolean delete(int id);
     public int getNewBookId();
