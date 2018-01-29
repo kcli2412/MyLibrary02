@@ -23,19 +23,21 @@ public class MainActivity extends AppCompatActivity {
     DBType dbType;
     ListView lv;
     ArrayList<String> bookNames;
-    ArrayAdapter<String> adapter;
+    //ArrayAdapter<String> adapter;
+    BookAdapter bookAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        dbType = DBType.CLOUD;
+        lv = findViewById(R.id.listView);
+        dbType = DBType.DB;
         dao = BookDAOFactory.getDAOInstance(MainActivity.this, dbType);
         bookNames = new ArrayList<>();
-        adapter = new ArrayAdapter<String>(
-                MainActivity.this, android.R.layout.simple_list_item_1, bookNames);
-        lv = findViewById(R.id.listView);
-        lv.setAdapter(adapter);
+        //adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bookNames);
+        bookAdapter = new BookAdapter(MainActivity.this, dao.getList());
+        //lv.setAdapter(adapter);
+        lv.setAdapter(bookAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -44,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-//        BookAdapter bookAdapter = new BookAdapter(MainActivity.this, dao.getList());
-//        lv.setAdapter(adapter);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         {
             bookNames.add(book.id + "_id, " + book.name);
         }
-        adapter.notifyDataSetChanged();
-//        bookAdapter.notifyDataSetChanged();
+//        adapter.notifyDataSetChanged();
+        bookAdapter.notifyDataSetChanged();
     }
 
     @Override
