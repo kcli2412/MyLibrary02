@@ -1,14 +1,18 @@
 package com.example.student.mylibrary02;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 
 import com.example.student.mylibrary02.data.Book;
 
 public class AddActivity extends AppCompatActivity {
+    ImageView iv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,7 @@ public class AddActivity extends AppCompatActivity {
 
     public void clickAdd(View v)
     {
+        iv = findViewById(R.id.add_image);
         EditText et1 = findViewById(R.id.add_name);
         EditText et2 = findViewById(R.id.add_isbn);
         EditText et3 = findViewById(R.id.add_author);
@@ -43,5 +48,26 @@ public class AddActivity extends AppCompatActivity {
                 press, category, introduction, pricing, score, bookcase);
         MainActivity.dao.add(book);
         finish();
+    }
+
+    public void clickAddImage(View v)
+    {
+        Intent it =new Intent(Intent.ACTION_GET_CONTENT);
+        it.setType("image/*");
+        startActivityForResult(it, 101);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK)
+        {
+            switch (requestCode)
+            {
+                case 101:
+                    break;
+            }
+        }
     }
 }

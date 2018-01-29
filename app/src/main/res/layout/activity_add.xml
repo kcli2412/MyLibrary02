@@ -23,6 +23,7 @@
                 android:id="@+id/add_image"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:onClick="clickAddImage"
                 app:srcCompat="@mipmap/ic_launcher" />
 
             <EditText
