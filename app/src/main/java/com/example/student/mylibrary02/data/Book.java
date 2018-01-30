@@ -6,6 +6,7 @@ package com.example.student.mylibrary02.data;
 
 public class Book {
     public int id;
+    //public String nameImage; // 封面名稱
     public String name; // 書名
     public String isbn; // ISBN
     public String author; // 作者
@@ -14,11 +15,11 @@ public class Book {
     public String category; // 類別
     public String introduction; // 簡介
     public int pricing; // 定價
-    public int score; // 評分
+    public float score; // 評分
     public int bookcase; // 書櫃
 
     public Book(int id, String name, String isbn, String author, String publication_date,
-                String press, String category, String introduction, int pricing, int score,
+                String press, String category, String introduction, int pricing, float score,
                 int bookcase)
     {
         this.id = id;

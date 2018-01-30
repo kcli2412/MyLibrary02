@@ -8,11 +8,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,41 +23,60 @@ import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class AddActivity extends AppCompatActivity {
+    EditText et1, et2, et3, et4, et5, et6, et7, et8;
+    RatingBar rb;
     ImageView imv;
     Uri imgUri;
+    String strIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        Intent intent = getIntent();
+        strIntent = intent.getStringExtra("Scan");
 
         imv = (ImageView) findViewById(R.id.add_image);
+
+        et1 = findViewById(R.id.add_name);
+        et2 = findViewById(R.id.add_isbn);
+        et3 = findViewById(R.id.add_author);
+        et4 = findViewById(R.id.add_publication);
+        et5 = findViewById(R.id.add_press);
+        et6 = findViewById(R.id.add_category);
+        et7 = findViewById(R.id.add_introduction);
+        et8 = findViewById(R.id.add_pricing);
+        rb = findViewById(R.id.add_score);
+        et2.setText(strIntent);
     }
 
     public void clickAdd(View v)
     {
-        EditText et1 = findViewById(R.id.add_name);
-        EditText et2 = findViewById(R.id.add_isbn);
-        EditText et3 = findViewById(R.id.add_author);
-        EditText et4 = findViewById(R.id.add_publication);
-        EditText et5 = findViewById(R.id.add_press);
-        EditText et6 = findViewById(R.id.add_category);
-        EditText et7 = findViewById(R.id.add_introduction);
-        EditText et8 = findViewById(R.id.add_pricing);
-        RatingBar rb = findViewById(R.id.add_score);
-
         String name = et1.getText().toString();
+        if (name.isEmpty() || name.length() == 0)
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("書籍資訊")
+                    .setMessage("請輸入書名 " + name)
+                    .setNeutralButton("關閉", null)
+                    .show();
+            return;
+        }
         String isbn = et2.getText().toString();
         String author = et3.getText().toString();
         String publication_date = et4.getText().toString();// "publication_date";
         String press = et5.getText().toString();//"press";
         String category = et6.getText().toString();//"category";
         String introduction = et7.getText().toString();//"introduction";
-        int pricing = Integer.valueOf(et8.getText().toString());
-        int score = Integer.valueOf(rb.getNumStars());
+        int pricing = et8.getText().toString().length() == 0 ? 0 : Integer.valueOf(et8.getText().toString());
+        float score =  rb.getRating();
         int bookcase = 1;
 
         Book book = new Book(MainActivity.dao.getNewBookId(), name, isbn, author, publication_date,
@@ -66,20 +87,19 @@ public class AddActivity extends AppCompatActivity {
 
     public void clickAddImage(View v)
     {
-        // CH 10-1
-//        Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(it, 100);
         // CH 10-2
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-//        {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 200);
-//        }
-//        savePhoto();
+        if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, 200);
+        }
+        else
+        {
+            savePhoto();
+        }
         // CH 10-5
-        Intent it =new Intent(Intent.ACTION_GET_CONTENT);
-        it.setType("image/*");
-        startActivityForResult(it, 101);
+//        Intent it =new Intent(Intent.ACTION_GET_CONTENT);
+//        it.setType("image/*");
+//        startActivityForResult(it, 101);
     }
 
     private void savePhoto()
@@ -126,14 +146,14 @@ public class AddActivity extends AppCompatActivity {
         }
         imv.setImageBitmap(bmp);
 
-        new AlertDialog.Builder(this)
-                .setTitle("圖檔資訊")
-                .setMessage("圖檔URI：" + imgUri.toString() +
-                "\n原始尺寸：" + iw + "x" + ih +
-                "\n載入尺寸：" + bmp.getWidth() + "x" + bmp.getHeight() +
-                "\n顯示尺寸：" + vw + "x" + vh)
-                .setNeutralButton("關閉", null)
-                .show();
+//        new AlertDialog.Builder(this)
+//                .setTitle("圖檔資訊")
+//                .setMessage("圖檔URI：" + imgUri.toString() +
+//                "\n原始尺寸：" + iw + "x" + ih +
+//                "\n載入尺寸：" + bmp.getWidth() + "x" + bmp.getHeight() +
+//                "\n顯示尺寸：" + vw + "x" + vh)
+//                .setNeutralButton("關閉", null)
+//                .show();
     }
 
     @Override
@@ -146,7 +166,7 @@ public class AddActivity extends AppCompatActivity {
             {
                 case 100:
                     // CH 10-1
-//                    Bundle bundle =data.getExtras();
+//                    Bundle bundle = data.getExtras();
 //                    Bitmap bmp = (Bitmap) bundle.get("data");
 //                    imv.setImageBitmap(bmp);
                     // CH 10-2
@@ -162,6 +182,11 @@ public class AddActivity extends AppCompatActivity {
 //                    imv.setImageBitmap(bmp);
                     // CH 10-3
                     showImg();
+                    //-------------------
+                    String extStorage = Environment.getExternalStorageDirectory().toString();
+                    File file = new File(extStorage, "myFile.PNG");
+                    Log.d("SAVEPHOTO", "onActivityResult: " + extStorage);
+                    Toast.makeText(this, extStorage, Toast.LENGTH_LONG).show();
                     break;
                 case 101:
                     imgUri = data.getData();

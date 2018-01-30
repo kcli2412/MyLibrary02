@@ -1,5 +1,6 @@
 package com.example.student.mylibrary02;
 
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,7 +41,7 @@ public class EditActivity extends AppCompatActivity {
         ed6.setText(book.category);
         ed7.setText(book.introduction);
         ed8.setText(String.valueOf(book.pricing));
-        rb.setNumStars(book.score);
+        rb.setRating(book.score);
     }
 
     public void clickBack(View v)
@@ -50,10 +51,20 @@ public class EditActivity extends AppCompatActivity {
 
     public void clickUpdate(View v)
     {
-        Book b = new Book(book.id, ed1.getText().toString(), ed2.getText().toString(), ed3.getText().toString(),
+        String name = ed1.getText().toString();
+        if (name.isEmpty() || name.length() == 0)
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("書籍資訊")
+                    .setMessage("請輸入書名 " + name)
+                    .setNeutralButton("關閉", null)
+                    .show();
+            return;
+        }
+        int pricing = ed8.getText().toString().length() == 0 ? 0 : Integer.valueOf(ed8.getText().toString());
+        Book b = new Book(book.id, name, ed2.getText().toString(), ed3.getText().toString(),
                 ed4.getText().toString(), ed5.getText().toString(), ed6.getText().toString(),
-                ed7.getText().toString(), Integer.valueOf(ed8.getText().toString()),
-                rb.getNumStars(), 1);
+                ed7.getText().toString(), pricing, rb.getRating(), 1);
         MainActivity.dao.update(b);
         finish();
     }

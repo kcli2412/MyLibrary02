@@ -26,14 +26,20 @@ public class BookAdapter extends BaseAdapter {
         this.mylist = mylist;
     }
 
+    public void refresh(ArrayList<Book> mylist)
+    {
+        this.mylist = mylist;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mylist.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
+    public Object getItem(int position) {
+        return mylist.get(position);
     }
 
     @Override

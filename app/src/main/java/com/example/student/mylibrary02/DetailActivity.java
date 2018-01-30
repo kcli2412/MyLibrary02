@@ -55,7 +55,8 @@ public class DetailActivity extends AppCompatActivity {
         tv6.setText(book.category);
         tv7.setText(book.introduction);
         tv8.setText(String.valueOf(book.pricing));
-        rb.setNumStars(book.score);
+        rb.setRating(book.score);
+        rb.setIsIndicator(true);
     }
 
     public void clickBack(View v)

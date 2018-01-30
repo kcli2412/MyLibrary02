@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
 import com.example.student.mylibrary02.data.BookDAO;
 import com.example.student.mylibrary02.data.BookDAOFactory;
 import com.example.student.mylibrary02.data.DBType;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
@@ -62,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
             bookNames.add(book.id + "_id, " + book.name);
         }
 //        adapter.notifyDataSetChanged();
-        bookAdapter.notifyDataSetChanged();
+
+        bookAdapter.refresh(dao.getList());
     }
 
     @Override
@@ -76,14 +80,32 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.menu_add:
-                Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                startActivity(intent);
+                new IntentIntegrator(this).initiateScan(); // `this` is the current Activity
                 break;
             case R.id.menu_edit:
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                startActivity(intent);
                 break;
             case R.id.menu_options:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if(result != null) {
+            if(result.getContents() == null) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                intent.putExtra("Scan", result.getContents());
+                startActivity(intent);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
