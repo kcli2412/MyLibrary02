@@ -2,19 +2,27 @@ package com.example.student.mylibrary02;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
+import com.example.student.mylibrary02.tools.FileManager;
+
+import java.io.File;
 
 public class DetailActivity extends AppCompatActivity {
     Book book;
     int id;
     TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8;
+    ImageView iv;
     RatingBar rb;
 
     boolean fastBack = false;
@@ -35,6 +43,7 @@ public class DetailActivity extends AppCompatActivity {
         tv7 = findViewById(R.id.detail_introduction);
         tv8 = findViewById(R.id.detail_pricing);
         rb = findViewById(R.id.detail_score);
+        iv = findViewById(R.id.detail_image);
     }
 
     @Override
@@ -43,20 +52,26 @@ public class DetailActivity extends AppCompatActivity {
 
         if (fastBack)
         {
-            finish();
+            //finish();
+            //return;
         }
 
-        book = MainActivity.dao.getBook(id);
-        tv1.setText(book.id + "_id, " + book.name);
-        tv2.setText(book.isbn);
-        tv3.setText(book.author);
-        tv4.setText(book.publication_date);
-        tv5.setText(book.press);
-        tv6.setText(book.category);
-        tv7.setText(book.introduction);
-        tv8.setText(String.valueOf(book.pricing));
-        rb.setRating(book.score);
         rb.setIsIndicator(true);
+
+        book = MainActivity.dao.getBook(id);
+        if (book != null)
+        {
+            iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+            tv1.setText(book.id + "_id, " + book.name);
+            tv2.setText(book.isbn);
+            tv3.setText(book.author);
+            tv4.setText(book.publication_date);
+            tv5.setText(book.press);
+            tv6.setText(book.category);
+            tv7.setText(book.introduction);
+            tv8.setText(String.valueOf(book.pricing));
+            rb.setRating(book.score);
+        }
     }
 
     public void clickBack(View v)

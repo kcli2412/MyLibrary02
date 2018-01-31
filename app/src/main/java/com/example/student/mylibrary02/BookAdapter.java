@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.student.mylibrary02.data.Book;
+import com.example.student.mylibrary02.tools.FileManager;
 
 import java.util.ArrayList;
 
@@ -66,6 +67,7 @@ public class BookAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
+        viewHolder.iv.setImageBitmap(FileManager.loadBitmap(context, String.valueOf(mylist.get(i).id) + ".jpg"));
         viewHolder.tv1.setText(mylist.get(i).name);
         viewHolder.tv2.setText(mylist.get(i).author);
 

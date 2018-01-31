@@ -3,6 +3,7 @@ package com.example.student.mylibrary02;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
+import com.example.student.mylibrary02.tools.FileManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,9 +34,10 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class AddActivity extends AppCompatActivity {
     EditText et1, et2, et3, et4, et5, et6, et7, et8;
     RatingBar rb;
-    ImageView imv;
+    ImageView img;
     Uri imgUri;
     String strIntent;
+    int bookId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class AddActivity extends AppCompatActivity {
         Intent intent = getIntent();
         strIntent = intent.getStringExtra("Scan");
 
-        imv = (ImageView) findViewById(R.id.add_image);
+        img = (ImageView) findViewById(R.id.add_image);
 
         et1 = findViewById(R.id.add_name);
         et2 = findViewById(R.id.add_isbn);
@@ -55,6 +58,8 @@ public class AddActivity extends AppCompatActivity {
         et8 = findViewById(R.id.add_pricing);
         rb = findViewById(R.id.add_score);
         et2.setText(strIntent);
+
+        bookId = MainActivity.dao.getNewBookId();
     }
 
     public void clickAdd(View v)
@@ -79,7 +84,7 @@ public class AddActivity extends AppCompatActivity {
         float score =  rb.getRating();
         int bookcase = 1;
 
-        Book book = new Book(MainActivity.dao.getNewBookId(), name, isbn, author, publication_date,
+        Book book = new Book(bookId, name, isbn, author, publication_date,
                 press, category, introduction, pricing, score, bookcase);
         MainActivity.dao.add(book);
         finish();
@@ -87,19 +92,10 @@ public class AddActivity extends AppCompatActivity {
 
     public void clickAddImage(View v)
     {
-        // CH 10-2
-        if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, 200);
-        }
-        else
-        {
-            savePhoto();
-        }
-        // CH 10-5
-//        Intent it =new Intent(Intent.ACTION_GET_CONTENT);
-//        it.setType("image/*");
-//        startActivityForResult(it, 101);
+        Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = new File(getExternalFilesDir("PHOTO"), String.valueOf(bookId) + ".jpg");
+        it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        startActivityForResult(it, 123);
     }
 
     private void savePhoto()
@@ -128,8 +124,8 @@ public class AddActivity extends AppCompatActivity {
         }
         iw = options.outWidth;
         ih = options.outHeight;
-        vw = imv.getWidth();
-        vh = imv.getHeight();
+        vw = img.getWidth();
+        vh = img.getHeight();
 
         int scaleFactor = Math.min(iw / vw, ih / vh);// 計算縮小比率
 
@@ -144,7 +140,7 @@ public class AddActivity extends AppCompatActivity {
             //e.printStackTrace();
             Toast.makeText(this, "無法讀取照片", Toast.LENGTH_LONG).show();
         }
-        imv.setImageBitmap(bmp);
+        img.setImageBitmap(bmp);
 
 //        new AlertDialog.Builder(this)
 //                .setTitle("圖檔資訊")
@@ -170,27 +166,39 @@ public class AddActivity extends AppCompatActivity {
 //                    Bitmap bmp = (Bitmap) bundle.get("data");
 //                    imv.setImageBitmap(bmp);
                     // CH 10-2
-//                    Bitmap bmp = null;
-//                    try {
-//                        bmp = BitmapFactory.decodeStream(
-//                                getContentResolver().openInputStream(imgUri), null, null);
-//
-//                    } catch (FileNotFoundException e) {
-//                        //e.printStackTrace();
-//                        Toast.makeText(this, "無法讀取照片", Toast.LENGTH_LONG).show();
+                    Bitmap bmp = null;
+                    try {
+                        bmp = BitmapFactory.decodeStream(
+                                getContentResolver().openInputStream(imgUri), null, null);
+
+                    } catch (FileNotFoundException e) {
+                        //e.printStackTrace();
+                        Toast.makeText(this, "無法讀取照片", Toast.LENGTH_LONG).show();
+                    }
+                    FileManager.saveBitmapToFile(bmp, String.valueOf(bookId));
+//                    if (FileManager.saveImageToInternalStorage(AddActivity.this, bmp, String.valueOf(bookId)))
+//                    {
+                     Toast.makeText(this,"Save OK " + String.valueOf(bookId), Toast.LENGTH_LONG).show();
 //                    }
-//                    imv.setImageBitmap(bmp);
+
+//                    Bitmap bitmap = FileManager.loadBitmapFromFile(String.valueOf(bookId));
+//                    if (bitmap != null)
+//                    {
+//                        imv.setImageBitmap(FileManager.loadBitmapFromFile(String.valueOf(bookId)));
+//                    } else {
+//                        Toast.makeText(this,"Load Error " + String.valueOf(bookId), Toast.LENGTH_LONG).show();
+//                    }
+
                     // CH 10-3
-                    showImg();
-                    //-------------------
-                    String extStorage = Environment.getExternalStorageDirectory().toString();
-                    File file = new File(extStorage, "myFile.PNG");
-                    Log.d("SAVEPHOTO", "onActivityResult: " + extStorage);
-                    Toast.makeText(this, extStorage, Toast.LENGTH_LONG).show();
+//                    showImg();
                     break;
                 case 101:
                     imgUri = data.getData();
                     showImg();
+                    break;
+                case 123:
+                    img.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(bookId)+".jpg"));
+
                     break;
             }
 

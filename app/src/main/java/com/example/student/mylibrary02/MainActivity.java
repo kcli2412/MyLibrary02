@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = findViewById(R.id.listView);
-        dbType = DBType.DB;
+        dbType = DBType.FILE;
         dao = BookDAOFactory.getDAOInstance(MainActivity.this, dbType);
         bookNames = new ArrayList<>();
         //adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bookNames);
@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        String packageName = this.getPackageName();
+        Log.e("packageName: ",packageName);
+        Intent launchIntent = this.getPackageManager().getLaunchIntentForPackage(packageName);
+        String className = launchIntent.getComponent().getClassName();
+        Log.e("className: ",className);
+        String APP_NAME = className;
     }
 
     @Override
