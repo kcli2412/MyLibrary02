@@ -52,8 +52,7 @@ public class DetailActivity extends AppCompatActivity {
 
         if (fastBack)
         {
-            //finish();
-            //return;
+            finish();
         }
 
         rb.setIsIndicator(true);
@@ -61,7 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         book = MainActivity.dao.getBook(id);
         if (book != null)
         {
-            iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+            //iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
             tv1.setText(book.id + "_id, " + book.name);
             tv2.setText(book.isbn);
             tv3.setText(book.author);

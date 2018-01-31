@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 //Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                intent.putExtra("Scan", result.getContents());
+                intent.putExtra("ISBN", result.getContents());
                 startActivity(intent);
             }
         } else {

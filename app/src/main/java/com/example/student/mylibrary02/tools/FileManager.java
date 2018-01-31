@@ -3,8 +3,10 @@ package com.example.student.mylibrary02.tools;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,13 +24,47 @@ import static android.content.ContentValues.TAG;
 
 public class FileManager {
 
-    public static Bitmap loadBitmap(Context context, String imageName)
+    public static Bitmap scaleBitmap(Context context, Bitmap bitmap, String imageName, ImageView imv)
     {
-        File file = new File(context.getExternalFilesDir("PHOTO"), imageName);
+        Bitmap newBitmap = null;
+
+        int iw, ih, vw, vh;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        File file = new File(context.getExternalFilesDir("Images"), imageName);
         try {
             InputStream is = new FileInputStream(file);
-            Bitmap bitmap = getFitImage(is);
-            return bitmap;
+            BitmapFactory.decodeStream(is, null, options);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        iw = options.outWidth;
+        ih = options.outHeight;
+        vw = imv.getWidth();
+        vh = imv.getHeight();
+
+        int scaleFactor = Math.min(iw/vw, ih/vh);
+
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = scaleFactor;
+
+        try {
+            InputStream is = new FileInputStream(file);
+            newBitmap = BitmapFactory.decodeStream(is, null, options);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return newBitmap;
+    }
+
+    public static Bitmap loadBitmap(Context context, String imageName)
+    {
+        File file = new File(context.getExternalFilesDir("Images"), imageName);
+        try {
+            InputStream is = new FileInputStream(file);
+            return getFitImage(is);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -89,76 +125,4 @@ public class FileManager {
         return false;
     }
 
-    // 得到存檔的路徑
-    public static File getOutputMediaFile(String imageName)
-    {
-        String state = Environment.getExternalStorageState();
-        if (! Environment.MEDIA_MOUNTED.equals(state)) {
-            Log.w(TAG, "getOutputMediaFile: Environment storage not writable");
-            return null;
-        }
-
-        File mediaStorageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "mylibrary02");
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-
-        // Create a media file name
-        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String timeStamp = imageName;
-        File mediaFile;
-
-        String mImageName = timeStamp +".jpg";
-        mediaFile = new File(mediaStorageDir.getPath() + File.separator + mImageName);
-        Log.d(TAG, "mediaStorageDir.getPath(): " + mediaStorageDir.getPath() + ", mImageName: "  + mImageName);
-        return mediaFile;
-    }
-
-    public static File saveBitmapToFile(Bitmap bitmap, String imageName)
-    {
-        File pictureFile = getOutputMediaFile(imageName);
-        if (pictureFile == null) {
-            Log.d(TAG, "Error creating media file, check storage permissions: ");
-            return null;
-        }
-
-        try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "File not found: " + e.getMessage());
-        } catch (IOException e) {
-            Log.d(TAG, "Error accessing file: " + e.getMessage());
-        }
-        return pictureFile;
-    }
-
-    public static Bitmap loadBitmapFromFile(String pathName)
-    {
-        File pictureFile = getOutputMediaFile(pathName);
-        if (pictureFile == null) {
-            Log.d(TAG, "Error creating media file, check storage permissions: ");
-            return null;
-        }
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        //options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        Log.d(TAG, "loadBitmapFromFile: " + pictureFile.getPath());
-        Bitmap bitmap = null;
-        try {
-            bitmap = BitmapFactory.decodeFile(pictureFile.getPath(), options);
-        }
-        catch (Exception e)
-        {
-            Log.d(TAG, "loadBitmapFromFile: e" + e.getMessage());
-        }
-
-        return bitmap;
-    }
 }

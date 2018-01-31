@@ -3,7 +3,6 @@ package com.example.student.mylibrary02;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,7 +25,9 @@ import com.example.student.mylibrary02.data.Book;
 import com.example.student.mylibrary02.tools.FileManager;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -44,7 +45,7 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Intent intent = getIntent();
-        strIntent = intent.getStringExtra("Scan");
+        strIntent = intent.getStringExtra("ISBN");
 
         img = (ImageView) findViewById(R.id.add_image);
 
@@ -93,63 +94,9 @@ public class AddActivity extends AppCompatActivity {
     public void clickAddImage(View v)
     {
         Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File f = new File(getExternalFilesDir("PHOTO"), String.valueOf(bookId) + ".jpg");
-        it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        startActivityForResult(it, 123);
-    }
-
-    private void savePhoto()
-    {
-        imgUri = getContentResolver().insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new ContentValues());
-        Intent it = new Intent("android.media.action.IMAGE_CAPTURE");
-        it.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+        File file = new File(getExternalFilesDir("Images"), String.valueOf(bookId) + ".jpg");
+        it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(it, 100);
-    }
-
-    private void showImg()
-    {
-        int iw, ih, vw, vh;
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        try {
-            BitmapFactory.decodeStream(
-                    getContentResolver().openInputStream(imgUri), null, options);
-        } catch (FileNotFoundException e) {
-            //e.printStackTrace();
-            Toast.makeText(this, "讀取照片資訊時發生錯誤", Toast.LENGTH_LONG).show();
-            return;
-        }
-        iw = options.outWidth;
-        ih = options.outHeight;
-        vw = img.getWidth();
-        vh = img.getHeight();
-
-        int scaleFactor = Math.min(iw / vw, ih / vh);// 計算縮小比率
-
-        options.inJustDecodeBounds = false;
-        //options.inSampleSize = scaleFactor;// 設定縮小比例
-
-        Bitmap bmp = null;
-        try {
-            bmp = BitmapFactory.decodeStream(
-                    getContentResolver().openInputStream(imgUri), null, options);
-        } catch (FileNotFoundException e) {
-            //e.printStackTrace();
-            Toast.makeText(this, "無法讀取照片", Toast.LENGTH_LONG).show();
-        }
-        img.setImageBitmap(bmp);
-
-//        new AlertDialog.Builder(this)
-//                .setTitle("圖檔資訊")
-//                .setMessage("圖檔URI：" + imgUri.toString() +
-//                "\n原始尺寸：" + iw + "x" + ih +
-//                "\n載入尺寸：" + bmp.getWidth() + "x" + bmp.getHeight() +
-//                "\n顯示尺寸：" + vw + "x" + vh)
-//                .setNeutralButton("關閉", null)
-//                .show();
     }
 
     @Override
@@ -161,68 +108,14 @@ public class AddActivity extends AppCompatActivity {
             switch (requestCode)
             {
                 case 100:
-                    // CH 10-1
-//                    Bundle bundle = data.getExtras();
-//                    Bitmap bmp = (Bitmap) bundle.get("data");
-//                    imv.setImageBitmap(bmp);
-                    // CH 10-2
-                    Bitmap bmp = null;
-                    try {
-                        bmp = BitmapFactory.decodeStream(
-                                getContentResolver().openInputStream(imgUri), null, null);
-
-                    } catch (FileNotFoundException e) {
-                        //e.printStackTrace();
-                        Toast.makeText(this, "無法讀取照片", Toast.LENGTH_LONG).show();
-                    }
-                    FileManager.saveBitmapToFile(bmp, String.valueOf(bookId));
-//                    if (FileManager.saveImageToInternalStorage(AddActivity.this, bmp, String.valueOf(bookId)))
-//                    {
-                     Toast.makeText(this,"Save OK " + String.valueOf(bookId), Toast.LENGTH_LONG).show();
-//                    }
-
-//                    Bitmap bitmap = FileManager.loadBitmapFromFile(String.valueOf(bookId));
-//                    if (bitmap != null)
-//                    {
-//                        imv.setImageBitmap(FileManager.loadBitmapFromFile(String.valueOf(bookId)));
-//                    } else {
-//                        Toast.makeText(this,"Load Error " + String.valueOf(bookId), Toast.LENGTH_LONG).show();
-//                    }
-
-                    // CH 10-3
-//                    showImg();
-                    break;
-                case 101:
-                    imgUri = data.getData();
-                    showImg();
-                    break;
-                case 123:
-                    img.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(bookId)+".jpg"));
-
+                    Bitmap bitmap = FileManager.loadBitmap(this, String.valueOf(bookId) + ".jpg");
+                    //img.setImageBitmap(FileManager.scaleBitmap(this, bitmap, String.valueOf(bookId) + ".jpg", img));
                     break;
             }
-
         }
         else
         {
             Toast.makeText(this, requestCode == 100 ? "沒有拍到照片" : "沒有選取照片", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 200)
-        {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            {
-                savePhoto();
-            }
-            else
-            {
-                Toast.makeText(this, "程式需要寫入權限才能運作", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
