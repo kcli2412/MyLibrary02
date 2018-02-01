@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv = findViewById(R.id.listView);
-        dbType = DBType.FILE;
+        dbType = DBType.CLOUD;
         dao = BookDAOFactory.getDAOInstance(MainActivity.this, dbType);
         bookNames = new ArrayList<>();
         //adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bookNames);

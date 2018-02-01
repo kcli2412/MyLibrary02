@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">我的書櫃</string>
+    <string name="app_edit">編輯書籍</string>
+    <string name="app_add">新增書籍</string>
+</resources>

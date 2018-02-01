@@ -1,18 +1,26 @@
 package com.example.student.mylibrary02;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 
 import com.example.student.mylibrary02.data.Book;
+import com.example.student.mylibrary02.tools.FileManager;
+
+import java.io.IOException;
 
 public class EditActivity extends AppCompatActivity {
     Book book;
     int id;
     EditText ed1, ed2, ed3, ed4, ed5, ed6, ed7, ed8;
+    ImageView iv;
     RatingBar rb;
 
     @Override
@@ -32,6 +40,7 @@ public class EditActivity extends AppCompatActivity {
         ed7 = findViewById(R.id.edit_introduction);
         ed8 = findViewById(R.id.edit_pricing);
         rb = findViewById(R.id.edit_score);
+        iv = findViewById(R.id.edit_image);
 
         ed1.setText(book.name);
         ed2.setText(book.isbn);
@@ -42,6 +51,15 @@ public class EditActivity extends AppCompatActivity {
         ed7.setText(book.introduction);
         ed8.setText(String.valueOf(book.pricing));
         rb.setRating(book.score);
+        iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+
+        setTitle(R.string.app_edit);
+    }
+
+    public void clickEditImage(View v)
+    {
+        Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(it, 100);
     }
 
     public void clickBack(View v)
@@ -67,5 +85,28 @@ public class EditActivity extends AppCompatActivity {
                 ed7.getText().toString(), pricing, rb.getRating(), 1);
         MainActivity.dao.update(b);
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK)
+        {
+            String imageName = String.valueOf(book.id) + ".jpg";
+            switch (requestCode)
+            {
+                case 100:
+                    Bundle pBundle = data.getExtras();
+                    Bitmap bmp = (Bitmap) pBundle.get("data");
+                    try {
+                        FileManager.saveBitmap(this, bmp, imageName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    iv.setImageBitmap(FileManager.loadBitmap(this, imageName));
+                    break;
+            }
+        }
     }
 }

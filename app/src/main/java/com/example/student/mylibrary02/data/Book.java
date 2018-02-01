@@ -6,7 +6,7 @@ package com.example.student.mylibrary02.data;
 
 public class Book {
     public int id;
-    //public String nameImage; // 封面名稱
+    public String imagename; // 封面名稱
     public String name; // 書名
     public String isbn; // ISBN
     public String author; // 作者

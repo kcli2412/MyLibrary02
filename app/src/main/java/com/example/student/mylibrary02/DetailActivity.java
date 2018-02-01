@@ -60,8 +60,8 @@ public class DetailActivity extends AppCompatActivity {
         book = MainActivity.dao.getBook(id);
         if (book != null)
         {
-            //iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
-            tv1.setText(book.id + "_id, " + book.name);
+            iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+            tv1.setText(book.name);
             tv2.setText(book.isbn);
             tv3.setText(book.author);
             tv4.setText(book.publication_date);
@@ -70,6 +70,8 @@ public class DetailActivity extends AppCompatActivity {
             tv7.setText(book.introduction);
             tv8.setText(String.valueOf(book.pricing));
             rb.setRating(book.score);
+
+            setTitle(book.name);
         }
     }
 

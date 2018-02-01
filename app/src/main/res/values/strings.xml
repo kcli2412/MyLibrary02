@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">MyLibrary02</string>
+    <string name="app_name" translatable="false">MyLibrary</string>
+    <string name="app_edit">Edit</string>
+    <string name="app_add">Add</string>
 </resources>

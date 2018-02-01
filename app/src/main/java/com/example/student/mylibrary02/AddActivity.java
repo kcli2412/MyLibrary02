@@ -27,6 +27,7 @@ import com.example.student.mylibrary02.tools.FileManager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -35,7 +36,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class AddActivity extends AppCompatActivity {
     EditText et1, et2, et3, et4, et5, et6, et7, et8;
     RatingBar rb;
-    ImageView img;
+    ImageView imv;
     Uri imgUri;
     String strIntent;
     int bookId;
@@ -47,7 +48,7 @@ public class AddActivity extends AppCompatActivity {
         Intent intent = getIntent();
         strIntent = intent.getStringExtra("ISBN");
 
-        img = (ImageView) findViewById(R.id.add_image);
+        imv = (ImageView) findViewById(R.id.add_image);
 
         et1 = findViewById(R.id.add_name);
         et2 = findViewById(R.id.add_isbn);
@@ -61,6 +62,8 @@ public class AddActivity extends AppCompatActivity {
         et2.setText(strIntent);
 
         bookId = MainActivity.dao.getNewBookId();
+
+        setTitle(R.string.app_add);
     }
 
     public void clickAdd(View v)
@@ -94,8 +97,6 @@ public class AddActivity extends AppCompatActivity {
     public void clickAddImage(View v)
     {
         Intent it = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = new File(getExternalFilesDir("Images"), String.valueOf(bookId) + ".jpg");
-        it.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(it, 100);
     }
 
@@ -103,13 +104,20 @@ public class AddActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK)
+        if (resultCode == RESULT_OK)
         {
+            String imageName = String.valueOf(bookId) + ".jpg";
             switch (requestCode)
             {
                 case 100:
-                    Bitmap bitmap = FileManager.loadBitmap(this, String.valueOf(bookId) + ".jpg");
-                    //img.setImageBitmap(FileManager.scaleBitmap(this, bitmap, String.valueOf(bookId) + ".jpg", img));
+                    Bundle pBundle = data.getExtras();
+                    Bitmap bmp = (Bitmap) pBundle.get("data");
+                    try {
+                        FileManager.saveBitmap(this, bmp, imageName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    imv.setImageBitmap(FileManager.loadBitmap(this, imageName));
                     break;
             }
         }

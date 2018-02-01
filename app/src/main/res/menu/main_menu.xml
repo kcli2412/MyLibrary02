@@ -14,5 +14,5 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_options"
-        android:title="OPTIONS" />
+        android:title="匯入" />
 </menu>

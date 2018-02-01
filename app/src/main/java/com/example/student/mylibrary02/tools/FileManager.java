@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import static android.content.ContentValues.TAG;
 
@@ -23,6 +24,23 @@ import static android.content.ContentValues.TAG;
  */
 
 public class FileManager {
+
+    public static void saveBitmap(Context context, Bitmap pBitmap,
+                                  String pFileName) throws IOException {
+
+//        String _folderPath = pFolderPath;
+//        if (_folderPath.lastIndexOf("/") == -1) {
+//            _folderPath += "/";
+//        }
+        File _file = new File(context.getExternalFilesDir("Images"), pFileName);
+        //File _file = new File(_folderPath + pFileName);
+        OutputStream _outStream  = new FileOutputStream(_file);
+
+        pBitmap.compress(Bitmap.CompressFormat.JPEG, 90, _outStream);
+
+        _outStream.flush();
+        _outStream.close();
+    }
 
     public static Bitmap scaleBitmap(Context context, Bitmap bitmap, String imageName, ImageView imv)
     {
