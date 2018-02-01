@@ -18,11 +18,12 @@ public class Book {
     public float score; // 評分
     public int bookcase; // 書櫃
 
-    public Book(int id, String name, String isbn, String author, String publication_date,
-                String press, String category, String introduction, int pricing, float score,
-                int bookcase)
+    public Book(int id, String imagename, String name, String isbn, String author,
+                String publication_date, String press, String category, String introduction, int pricing,
+                float score, int bookcase)
     {
         this.id = id;
+        this.imagename = imagename;
         this.name = name;
         this.isbn = isbn;
         this.author = author;

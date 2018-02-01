@@ -40,6 +40,8 @@ public class AddActivity extends AppCompatActivity {
     Uri imgUri;
     String strIntent;
     int bookId;
+    String bookImagename;
+    int bookcase = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class AddActivity extends AppCompatActivity {
         et2.setText(strIntent);
 
         bookId = MainActivity.dao.getNewBookId();
+        bookImagename = String.valueOf(bookcase) + "_" + String.valueOf(bookId) + ".jpg";
 
         setTitle(R.string.app_add);
     }
@@ -80,15 +83,14 @@ public class AddActivity extends AppCompatActivity {
         }
         String isbn = et2.getText().toString();
         String author = et3.getText().toString();
-        String publication_date = et4.getText().toString();// "publication_date";
-        String press = et5.getText().toString();//"press";
-        String category = et6.getText().toString();//"category";
-        String introduction = et7.getText().toString();//"introduction";
+        String publication_date = et4.getText().toString();
+        String press = et5.getText().toString();
+        String category = et6.getText().toString();
+        String introduction = et7.getText().toString();
         int pricing = et8.getText().toString().length() == 0 ? 0 : Integer.valueOf(et8.getText().toString());
         float score =  rb.getRating();
-        int bookcase = 1;
 
-        Book book = new Book(bookId, name, isbn, author, publication_date,
+        Book book = new Book(bookId, bookImagename, name, isbn, author, publication_date,
                 press, category, introduction, pricing, score, bookcase);
         MainActivity.dao.add(book);
         finish();
@@ -106,18 +108,17 @@ public class AddActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK)
         {
-            String imageName = String.valueOf(bookId) + ".jpg";
             switch (requestCode)
             {
                 case 100:
                     Bundle pBundle = data.getExtras();
                     Bitmap bmp = (Bitmap) pBundle.get("data");
                     try {
-                        FileManager.saveBitmap(this, bmp, imageName);
+                        FileManager.saveBitmap(this, bmp, bookImagename);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    imv.setImageBitmap(FileManager.loadBitmap(this, imageName));
+                    imv.setImageBitmap(FileManager.loadBitmap(this, bookImagename));
                     break;
             }
         }

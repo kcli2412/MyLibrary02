@@ -25,21 +25,15 @@ import static android.content.ContentValues.TAG;
 
 public class FileManager {
 
-    public static void saveBitmap(Context context, Bitmap pBitmap,
-                                  String pFileName) throws IOException {
+    public static void saveBitmap(Context context, Bitmap bitmap, String fileName) throws IOException
+    {
+        File file = new File(context.getExternalFilesDir("Images"), fileName);
+        OutputStream outputStream  = new FileOutputStream(file);
 
-//        String _folderPath = pFolderPath;
-//        if (_folderPath.lastIndexOf("/") == -1) {
-//            _folderPath += "/";
-//        }
-        File _file = new File(context.getExternalFilesDir("Images"), pFileName);
-        //File _file = new File(_folderPath + pFileName);
-        OutputStream _outStream  = new FileOutputStream(_file);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream);
 
-        pBitmap.compress(Bitmap.CompressFormat.JPEG, 90, _outStream);
-
-        _outStream.flush();
-        _outStream.close();
+        outputStream.flush();
+        outputStream.close();
     }
 
     public static Bitmap scaleBitmap(Context context, Bitmap bitmap, String imageName, ImageView imv)

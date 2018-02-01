@@ -28,6 +28,7 @@ public class BookDAODBImpl implements BookDAO {
     public boolean add(Book book) {
         ContentValues contentValues = new ContentValues();
         contentValues.put("_id", book.id);
+        contentValues.put("imagename", book.imagename);
         contentValues.put("name", book.name);
         contentValues.put("isbn", book.isbn);
         contentValues.put("author", book.author);
@@ -46,22 +47,23 @@ public class BookDAODBImpl implements BookDAO {
     public ArrayList<Book> getList()
     {
         mylist = new ArrayList<>();
-        Cursor cursor = db.query("books", new String[] {"_id", "name", "isbn", "author", "publication_date",
-                        "press", "category", "introduction", "pricing", "score", "bookcase"},
+        Cursor cursor = db.query("books", new String[] {"_id", "imagename", "name", "isbn", "author",
+                        "publication_date", "press", "category", "introduction", "pricing",
+                        "score", "bookcase"},
                 null, null, null, null, null);
         if (cursor.moveToFirst())
         {
             Book book = new Book(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7), cursor.getInt(8),
-                    cursor.getInt(9), cursor.getInt(10));
+                    cursor.getString(6), cursor.getString(7), cursor.getString(8),
+                    cursor.getInt(9), cursor.getInt(10), cursor.getInt(11));
             mylist.add(book);
             while (cursor.moveToNext())
             {
                 book = new Book(Integer.valueOf(cursor.getString(0)), cursor.getString(1), cursor.getString(2),
                         cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                        cursor.getString(6), cursor.getString(7), cursor.getInt(8),
-                        cursor.getInt(9), cursor.getInt(10));
+                        cursor.getString(6), cursor.getString(7), cursor.getString(8),
+                        cursor.getInt(9), cursor.getInt(10), cursor.getInt(11));
                 mylist.add(book);
             }
         }
@@ -75,15 +77,16 @@ public class BookDAODBImpl implements BookDAO {
 
     public Book getBookById(int id)
     {
-        Cursor cursor = db.query("books", new String[] {"_id", "name", "isbn", "author", "publication_date",
-                        "press", "category", "introduction", "pricing", "score", "bookcase"},
+        Cursor cursor = db.query("books", new String[] {"_id", "imagename", "name", "isbn", "author",
+                        "publication_date", "press", "category", "introduction", "pricing",
+                        "score", "bookcase"},
                 "_id=?", new String[] {String.valueOf(id)}, null, null, null);
         if (cursor.moveToFirst())
         {
             Book book = new Book(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                     cursor.getString(3), cursor.getString(4), cursor.getString(5),
-                    cursor.getString(6), cursor.getString(7), cursor.getInt(8),
-                    cursor.getInt(9), cursor.getInt(10));
+                    cursor.getString(6), cursor.getString(7), cursor.getString(8),
+                    cursor.getInt(9), cursor.getInt(10), cursor.getInt(11));
             return book;
         }
         return null;
@@ -92,6 +95,7 @@ public class BookDAODBImpl implements BookDAO {
     @Override
     public boolean update(Book book) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put("imagename", book.imagename);
         contentValues.put("name", book.name);
         contentValues.put("isbn", book.isbn);
         contentValues.put("author", book.author);

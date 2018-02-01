@@ -49,13 +49,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        String packageName = this.getPackageName();
-        Log.e("packageName: ",packageName);
-        Intent launchIntent = this.getPackageManager().getLaunchIntentForPackage(packageName);
-        String className = launchIntent.getComponent().getClassName();
-        Log.e("className: ",className);
-        String APP_NAME = className;
     }
 
     @Override
@@ -87,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId())
         {
             case R.id.menu_add:
-                new IntentIntegrator(this).initiateScan(); // `this` is the current Activity
+                new IntentIntegrator(this).initiateScan();
                 break;
             case R.id.menu_edit:
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);

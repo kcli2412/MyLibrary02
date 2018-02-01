@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity {
         ed7.setText(book.introduction);
         ed8.setText(String.valueOf(book.pricing));
         rb.setRating(book.score);
-        iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+        iv.setImageBitmap(FileManager.loadBitmap(this, book.imagename));
 
         setTitle(R.string.app_edit);
     }
@@ -80,9 +80,10 @@ public class EditActivity extends AppCompatActivity {
             return;
         }
         int pricing = ed8.getText().toString().length() == 0 ? 0 : Integer.valueOf(ed8.getText().toString());
-        Book b = new Book(book.id, name, ed2.getText().toString(), ed3.getText().toString(),
-                ed4.getText().toString(), ed5.getText().toString(), ed6.getText().toString(),
-                ed7.getText().toString(), pricing, rb.getRating(), 1);
+        Book b = new Book(book.id, book.imagename, name,
+                ed2.getText().toString(), ed3.getText().toString(), ed4.getText().toString(),
+                ed5.getText().toString(), ed6.getText().toString(), ed7.getText().toString(),
+                pricing, rb.getRating(), 1);
         MainActivity.dao.update(b);
         finish();
     }
@@ -93,18 +94,17 @@ public class EditActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK)
         {
-            String imageName = String.valueOf(book.id) + ".jpg";
             switch (requestCode)
             {
                 case 100:
                     Bundle pBundle = data.getExtras();
                     Bitmap bmp = (Bitmap) pBundle.get("data");
                     try {
-                        FileManager.saveBitmap(this, bmp, imageName);
+                        FileManager.saveBitmap(this, bmp, book.imagename);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    iv.setImageBitmap(FileManager.loadBitmap(this, imageName));
+                    iv.setImageBitmap(FileManager.loadBitmap(this, book.imagename));
                     break;
             }
         }

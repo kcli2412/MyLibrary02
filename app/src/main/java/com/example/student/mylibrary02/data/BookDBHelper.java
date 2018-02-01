@@ -18,7 +18,7 @@ public class BookDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE `books` ( `_id` INTEGER, `name` TEXT, `isbn` TEXT," +
+        sqLiteDatabase.execSQL("CREATE TABLE `books` ( `_id` INTEGER, `imagename` TEXT, `name` TEXT, `isbn` TEXT," +
                 " `author` TEXT, `publication_date` TEXT, `press` TEXT," +
                 " `category` TEXT, `introduction` TEXT, `pricing` INTEGER," +
                 " `score` INTEGER, `bookcase` INTEGER, PRIMARY KEY(`_id`) )");

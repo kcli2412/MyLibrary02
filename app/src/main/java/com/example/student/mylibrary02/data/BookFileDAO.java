@@ -98,6 +98,7 @@ public class BookFileDAO implements BookDAO {
         {
             if (b.id == book.id)
             {
+                b.imagename = book.imagename;
                 b.name = book.name;
                 b.isbn = book.isbn;
                 b.author = book.author;

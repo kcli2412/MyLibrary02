@@ -67,7 +67,7 @@ public class BookAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        viewHolder.iv.setImageBitmap(FileManager.loadBitmap(context, String.valueOf(mylist.get(i).id) + ".jpg"));
+        viewHolder.iv.setImageBitmap(FileManager.loadBitmap(context, mylist.get(i).imagename));
         viewHolder.tv1.setText(mylist.get(i).name);
         viewHolder.tv2.setText(mylist.get(i).author);
 

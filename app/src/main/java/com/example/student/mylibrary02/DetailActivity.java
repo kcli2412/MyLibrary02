@@ -60,7 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         book = MainActivity.dao.getBook(id);
         if (book != null)
         {
-            iv.setImageBitmap(FileManager.loadBitmap(this, String.valueOf(book.id) + ".jpg"));
+            iv.setImageBitmap(FileManager.loadBitmap(this, book.imagename));
             tv1.setText(book.name);
             tv2.setText(book.isbn);
             tv3.setText(book.author);
