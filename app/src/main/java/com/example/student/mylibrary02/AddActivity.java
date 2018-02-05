@@ -1,20 +1,12 @@
 package com.example.student.mylibrary02;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
+import android.graphics.drawable.BitmapDrawable;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,32 +15,36 @@ import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
 import com.example.student.mylibrary02.tools.FileManager;
+import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
-import java.io.InputStream;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AddActivity extends AppCompatActivity {
     EditText et1, et2, et3, et4, et5, et6, et7, et8;
     RatingBar rb;
     ImageView imv;
-    Uri imgUri;
-    String strIntent;
+    String isbnIntent;
     int bookId;
     String bookImagename;
     int bookcase = 1;
+    Book urlBook;
+    String urlBookImagename;
+    Boolean isPicasso = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         Intent intent = getIntent();
-        strIntent = intent.getStringExtra("ISBN");
+        isbnIntent = intent.getStringExtra("ISBN");
 
         imv = (ImageView) findViewById(R.id.add_image);
 
@@ -61,12 +57,109 @@ public class AddActivity extends AppCompatActivity {
         et7 = findViewById(R.id.add_introduction);
         et8 = findViewById(R.id.add_pricing);
         rb = findViewById(R.id.add_score);
-        et2.setText(strIntent);
 
         bookId = MainActivity.dao.getNewBookId();
         bookImagename = String.valueOf(bookcase) + "_" + String.valueOf(bookId) + ".jpg";
 
         setTitle(R.string.app_add);
+
+        if (isbnIntent == null)
+            return;
+
+        if (isNumeric(isbnIntent) == false)
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("ISBN")
+                    .setMessage("輸入的ISBN值為 " + isbnIntent + " 資料格式錯誤!!")
+                    .setNeutralButton("關閉", null)
+                    .show();
+            et2.setText(isbnIntent);
+            return;
+        }
+
+        urlBook = new Book(0, "", "", "", "",
+                "", "", "", "", 0,
+                0, 0);
+
+        new Thread()
+        {
+            @Override
+            public void run() {
+                super.run();
+                if (isbnIntent == null)
+                    isbnIntent = "";
+                final String url = "http://192.83.186.170/search~S1*cht?/i"+isbnIntent+"/i"+isbnIntent+"/1%2C2%2C19%2CE/frameset&FF=i"+isbnIntent+"&1%2C%2C12/indexsort=-";
+                Document doc = null;
+                final ArrayList<String> bookinfo = new ArrayList<>();
+                try {
+                    doc = Jsoup.connect(url).get();
+                    Elements headlines = doc.select("td");
+                    for (Element headline : headlines) {
+                        Elements headline_select = headline.select("img");
+                        if (headline_select.attr("alt").equals("book jacket"))
+                        {
+                            urlBookImagename = headline_select.attr("src");
+                        }
+                        bookinfo.add(headline.text());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < bookinfo.size(); i++)
+                        {
+                            if ((i + 1) < bookinfo.size())
+                                setBooKInfo(bookinfo.get(i), bookinfo.get(i + 1));
+                        }
+                        if (urlBook.isbn.length() > 0)
+                        {
+                            et1.setText(urlBook.name);
+                            et2.setText(urlBook.isbn);
+                            et3.setText(urlBook.author);
+                            et5.setText(urlBook.press);
+                            et6.setText(urlBook.category);
+                            Picasso.with(AddActivity.this).load(urlBookImagename).into(imv);
+                            isPicasso = true;
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
+    public boolean isNumeric(String str)
+    {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches())
+        {
+            return false;
+        }
+        return true;
+    }
+    private void setBooKInfo(String str1, String str2)
+    {
+        switch (str1)
+        {
+            case "著者":
+                urlBook.author = str2;
+                break;
+            case "題名":
+                urlBook.name = str2;
+                break;
+            case "出版項":
+                urlBook.press= str2;
+                break;
+            case "國際標準書號":
+                urlBook.isbn = str2;
+                break;
+            case "標題":
+                urlBook.category = str2;
+                break;
+        }
     }
 
     public void clickAdd(View v)
@@ -81,6 +174,18 @@ public class AddActivity extends AppCompatActivity {
                     .show();
             return;
         }
+
+        if (isPicasso)
+        {
+            Bitmap bmp = ((BitmapDrawable)imv.getDrawable()).getBitmap();
+            try {
+                FileManager.saveBitmap(this, bmp, bookImagename);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
         String isbn = et2.getText().toString();
         String author = et3.getText().toString();
         String publication_date = et4.getText().toString();

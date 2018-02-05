@@ -3,8 +3,6 @@ package com.example.student.mylibrary02.tools;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -16,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Student on 2018/1/31.

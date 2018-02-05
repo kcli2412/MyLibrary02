@@ -2,8 +2,6 @@ package com.example.student.mylibrary02;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,12 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.student.mylibrary02.data.Book;
 import com.example.student.mylibrary02.tools.FileManager;
-
-import java.io.File;
 
 public class DetailActivity extends AppCompatActivity {
     Book book;
