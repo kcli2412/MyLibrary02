@@ -29,7 +29,7 @@
         android:onClick="clickAddImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_name"
-        app:srcCompat="@mipmap/ic_launcher" />
+        app:srcCompat="@drawable/addimage" />
 
     <EditText
         android:id="@+id/add_author"
@@ -146,7 +146,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="clickAdd"
-        android:text="ADD"
+        android:text="@string/button_add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_score" />

@@ -2,4 +2,9 @@
     <string name="app_name" translatable="false">MyLibrary</string>
     <string name="app_edit">Edit</string>
     <string name="app_add">Add</string>
+    <string name="button_add">ADD</string>
+    <string name="button_edit">EDIT</string>
+    <string name="button_delete">DELETE</string>
+    <string name="button_update">UPDATE</string>
+    <string name="button_back">BACK</string>
 </resources>
